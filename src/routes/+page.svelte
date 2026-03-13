@@ -489,13 +489,10 @@
   }
 
   .card-accent {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
     height: 4px;
     background: var(--accent-color);
-    z-index: 1;
+    border-radius: 2px;
+    margin-bottom: var(--space-md);
   }
 
   .card-title {
@@ -644,6 +641,16 @@
 
   /* Mobile */
   @media (max-width: 768px) {
+    .counter-section {
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
+    }
+
+    .ingredients-section {
+      padding-left: var(--space-md);
+      padding-right: var(--space-md);
+    }
+
     .stats-grid {
       grid-template-columns: 1fr;
       gap: var(--space-lg);

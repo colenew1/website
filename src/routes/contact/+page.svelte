@@ -21,11 +21,11 @@
   let isSubmitted = false;
 
   const floatingIngredients = [
-    { src: '/images/ingredient-onion.svg', top: '15%', left: '5%', size: 60 },
-    { src: '/images/ingredient-herb.svg', top: '30%', right: '8%', size: 50 },
-    { src: '/images/ingredient-garlic.svg', bottom: '25%', left: '3%', size: 45 },
-    { src: '/images/ingredient-mushroom.svg', bottom: '15%', right: '5%', size: 55 },
-    { src: '/images/ingredient-carrot.svg', top: '60%', left: '8%', size: 50 },
+    { src: '/images/ingredient-onion.svg', top: '12%', left: '8%', size: 55 },
+    { src: '/images/ingredient-herb.svg', top: '18%', right: '10%', size: 45 },
+    { src: '/images/ingredient-garlic.svg', bottom: '30%', left: '10%', size: 40 },
+    { src: '/images/ingredient-mushroom.svg', bottom: '20%', right: '8%', size: 50 },
+    { src: '/images/ingredient-carrot.svg', bottom: '55%', right: '12%', size: 45 },
   ];
 
   onMount(() => {
@@ -71,9 +71,9 @@
 
         // Continuous float
         gsap.to(el, {
-          y: gsap.utils.random(-25, 25),
-          rotation: gsap.utils.random(-20, 20),
-          duration: 2.5 + Math.random() * 2,
+          y: gsap.utils.random(-10, 10),
+          rotation: gsap.utils.random(-8, 8),
+          duration: 3 + Math.random() * 2,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
@@ -94,9 +94,9 @@
       });
 
       gsap.to(decorPan, {
-        y: -15,
-        rotation: 5,
-        duration: 3,
+        y: -8,
+        rotation: 3,
+        duration: 4,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut"
@@ -104,8 +104,11 @@
     }
   });
 
-  function handleSubmit() {
+  let submitError = '';
+
+  async function handleSubmit() {
     isSubmitting = true;
+    submitError = '';
 
     // Button animation
     gsap.to('.submit-btn', {
@@ -113,8 +116,23 @@
       duration: 0.1
     });
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      const body = new URLSearchParams({
+        'form-name': 'contact',
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message
+      });
+
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
+      });
+
+      if (!response.ok) throw new Error('Submission failed');
+
       isSubmitting = false;
       isSubmitted = true;
 
@@ -139,7 +157,11 @@
           });
         }
       });
-    }, 1500);
+    } catch (err) {
+      isSubmitting = false;
+      submitError = 'Something went wrong. Please try again.';
+      gsap.to('.submit-btn', { scale: 1, duration: 0.2 });
+    }
   }
 
   function resetForm() {
@@ -203,7 +225,11 @@
 
     <div bind:this={formContainer} class="contact-content">
       {#if !isSubmitted}
-        <form class="contact-form" on:submit|preventDefault={handleSubmit}>
+        <form name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="contact-form" on:submit|preventDefault={handleSubmit}>
+          <input type="hidden" name="form-name" value="contact" />
+          <p class="hidden-field">
+            <label>Don't fill this out: <input name="bot-field" /></label>
+          </p>
           <!-- Decorative element on form -->
           <div class="form-decor">
             <img src="/images/decor-sparkles.png" alt="" aria-hidden="true" />
@@ -222,6 +248,7 @@
             <input
               type="text"
               id="name"
+              name="name"
               bind:value={formData.name}
               required
               class="form-input"
@@ -242,6 +269,7 @@
             <input
               type="email"
               id="email"
+              name="email"
               bind:value={formData.email}
               required
               class="form-input"
@@ -259,7 +287,7 @@
               <MessageSquare size={18} strokeWidth={2} />
               <span>What's this about?</span>
             </label>
-            <select id="subject" bind:value={formData.subject} required class="form-input form-select">
+            <select id="subject" name="subject" bind:value={formData.subject} required class="form-input form-select">
               <option value="">Select a topic...</option>
               <option value="collab">Collaboration</option>
               <option value="business">Business Inquiry</option>
@@ -280,6 +308,7 @@
             </label>
             <textarea
               id="message"
+              name="message"
               bind:value={formData.message}
               required
               class="form-input form-textarea"
@@ -301,6 +330,10 @@
               <Send size={20} strokeWidth={2} />
             {/if}
           </button>
+
+          {#if submitError}
+            <p class="submit-error">{submitError}</p>
+          {/if}
         </form>
       {:else}
         <!-- Success Message -->
@@ -360,12 +393,12 @@
   /* Decorative pan */
   .decor-pan {
     position: absolute;
-    bottom: 10%;
-    right: -50px;
-    width: 180px;
-    opacity: 0.7;
+    bottom: 8%;
+    right: 2%;
+    width: 140px;
+    opacity: 0.5;
     z-index: 0;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 10px 25px rgba(0,0,0,0.15));
   }
 
   .decor-pan img {
@@ -408,6 +441,17 @@
     z-index: 1;
   }
 
+  .hidden-field {
+    display: none;
+  }
+
+  .submit-error {
+    text-align: center;
+    color: #c53030;
+    margin-top: var(--space-md);
+    font-size: 0.95rem;
+  }
+
   /* Form Styles */
   .contact-form {
     position: relative;
@@ -419,12 +463,12 @@
 
   .form-decor {
     position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 60px;
-    height: 60px;
-    opacity: 0.7;
-    animation: sparkle-rotate 6s linear infinite;
+    top: -15px;
+    right: -15px;
+    width: 50px;
+    height: 50px;
+    opacity: 0.5;
+    animation: sparkle-rotate 10s linear infinite;
   }
 
   .form-decor img {
@@ -639,6 +683,7 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    z-index: 0;
   }
 
   .gradient-orb {
@@ -648,30 +693,30 @@
   }
 
   .orb-1 {
-    width: 400px;
-    height: 400px;
+    width: 350px;
+    height: 350px;
     background: var(--color-orange);
-    opacity: 0.06;
-    top: 10%;
-    right: -100px;
+    opacity: 0.05;
+    top: 5%;
+    right: -50px;
   }
 
   .orb-2 {
-    width: 300px;
-    height: 300px;
+    width: 280px;
+    height: 280px;
     background: var(--color-sage);
-    opacity: 0.08;
+    opacity: 0.06;
     bottom: 10%;
-    left: -100px;
+    left: -40px;
   }
 
   .orb-3 {
     width: 200px;
     height: 200px;
     background: var(--color-coral);
-    opacity: 0.05;
-    top: 50%;
-    left: 20%;
+    opacity: 0.04;
+    top: 45%;
+    left: 15%;
   }
 
   @media (max-width: 768px) {

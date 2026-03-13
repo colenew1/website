@@ -123,7 +123,7 @@
 
       <!-- Couple Image -->
       <div bind:this={coupleImage} class="couple-image">
-        <img src="/images/cavery.png" alt="Cole and his wife cooking together" />
+        <img src="/images/cole-about.jpeg" alt="Cole holding his Guinness World Record certificate" />
       </div>
     </div>
   </div>

@@ -1,121 +1,57 @@
 <script lang="ts">
-  import { Play, Youtube, Video, Folder, ExternalLink, ChefHat } from 'lucide-svelte';
-
-  // Placeholder links - update these with real URLs
   const links = [
-    {
-      title: 'Latest Video',
-      description: 'Watch my newest cooking creation',
-      url: '#',
-      icon: Play,
-      color: 'var(--color-coral)'
-    },
-    {
-      title: 'YouTube Channel',
-      description: 'Subscribe for more recipes',
-      url: '#',
-      icon: Youtube,
-      color: 'var(--color-orange)'
-    },
-    {
-      title: 'TikTok',
-      description: 'Quick cooking clips',
-      url: '#',
-      icon: Video,
-      color: 'var(--color-charcoal)'
-    },
-    {
-      title: 'Cooking Channel',
-      description: 'Full recipe tutorials',
-      url: '#',
-      icon: ChefHat,
-      color: 'var(--color-sage)'
-    },
-    {
-      title: 'Media Kit',
-      description: 'For press and collaborations',
-      url: '#',
-      icon: Folder,
-      color: 'var(--color-charcoal-light)'
-    }
-  ];
-
-  const socials = [
-    { name: 'TikTok', url: '#' },
-    { name: 'Instagram', url: '#' },
-    { name: 'YouTube', url: '#' },
-    { name: 'Facebook', url: '#' },
+    { title: 'Contact Me', url: '/contact', icon: '', featured: true, external: false },
+    { title: 'TikTok', url: 'https://www.tiktok.com/@colescooks', icon: '/images/icon-tiktok.png' },
+    { title: 'YouTube', url: 'https://www.youtube.com/@Colescooks', icon: '/images/icon-youtube.png' },
+    { title: 'Facebook', url: 'https://www.facebook.com/Colescooks', icon: '/images/icon-facebook.png' },
+    { title: 'Instagram', url: 'https://www.instagram.com/colescooks/', icon: '/images/icon-instagram.png' },
   ];
 </script>
 
 <svelte:head>
   <title>Links | colescooks</title>
-  <meta name="description" content="All of Cole's links in one place - YouTube, TikTok, and more!" />
+  <meta name="description" content="All of Cole's links in one place" />
 </svelte:head>
 
 <section class="links-page">
-  <!-- Background image -->
   <div class="bg-image">
     <img src="/images/scene-cozy.png" alt="" aria-hidden="true" />
     <div class="bg-overlay"></div>
   </div>
 
   <div class="links-container">
-    <!-- Profile Section -->
     <div class="profile-section">
       <div class="avatar">
-        <img src="/images/cavery.png" alt="Cole and his wife" />
+        <img src="/images/cole-about.jpeg" alt="Cole" />
       </div>
       <h1 class="profile-name">colescooks</h1>
       <p class="profile-tagline">Creator. Chef. Culinary Experimenter.</p>
-
-      <!-- Social Icons Row -->
-      <div class="social-row">
-        {#each socials as social}
-          <a
-            href={social.url}
-            class="social-icon"
-            aria-label={social.name}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="social-letter">{social.name[0]}</span>
-          </a>
-        {/each}
-      </div>
     </div>
 
-    <!-- Links List -->
     <div class="links-list">
-      {#each links as link}
+      {#each links as link, i}
         <a
           href={link.url}
-          class="link-card"
-          style="--card-color: {link.color}"
-          target="_blank"
-          rel="noopener noreferrer"
+          class="link-card{link.featured ? ' featured' : ''}"
+          target={link.external !== false ? '_blank' : undefined}
+          rel={link.external !== false ? 'noopener noreferrer' : undefined}
         >
-          <div class="link-icon">
-            <svelte:component this={link.icon} size={22} strokeWidth={2} />
-          </div>
-          <div class="link-content">
-            <span class="link-title">{link.title}</span>
-            <span class="link-description">{link.description}</span>
-          </div>
-          <div class="link-arrow">
-            <ExternalLink size={18} strokeWidth={2} />
-          </div>
+          {#if link.icon}
+            <img src={link.icon} alt="" class="link-icon" />
+          {:else}
+            <svg class="link-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="M22 4L12 13 2 4" />
+            </svg>
+          {/if}
+          <span class="link-title">{link.title}</span>
+          <span class="link-arrow">→</span>
         </a>
       {/each}
     </div>
 
-    <!-- Visit Full Site Link -->
-    <a href="/" class="full-site-link">
-      Visit Full Website
-      <ExternalLink size={16} strokeWidth={2} />
-    </a>
+    <a href="/" class="full-site-link">Visit Full Website</a>
 
-    <!-- Footer -->
     <footer class="links-footer">
       <p>Everything you can imagine is real.</p>
     </footer>
@@ -130,10 +66,9 @@
     padding: var(--space-xl) var(--space-md);
     position: relative;
     overflow: hidden;
-    isolation: isolate; /* Creates new stacking context */
+    isolation: isolate;
   }
 
-  /* Background */
   .bg-image {
     position: fixed;
     inset: 0;
@@ -151,16 +86,16 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(
-      135deg,
-      rgba(255, 248, 240, 0.92) 0%,
-      rgba(255, 248, 240, 0.88) 50%,
-      rgba(255, 248, 240, 0.85) 100%
+      160deg,
+      rgba(255, 248, 240, 0.93) 0%,
+      rgba(245, 235, 224, 0.9) 50%,
+      rgba(255, 248, 240, 0.88) 100%
     );
   }
 
   .links-container {
     width: 100%;
-    max-width: 420px;
+    max-width: 440px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -168,130 +103,135 @@
     z-index: 10;
   }
 
-  /* Profile Section */
+  /* Profile */
   .profile-section {
     text-align: center;
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-lg);
   }
 
   .avatar {
-    width: 100px;
-    height: 100px;
+    width: 220px;
+    height: 220px;
     margin: 0 auto var(--space-md);
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 10px 30px rgba(232, 93, 36, 0.25);
-    border: 3px solid var(--color-orange);
+    box-shadow:
+      0 8px 30px rgba(232, 93, 36, 0.2),
+      0 0 0 4px var(--color-cream),
+      0 0 0 7px var(--color-orange);
   }
 
   .avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: center 15%;
   }
 
   .profile-name {
     font-family: var(--font-display);
-    font-size: 1.75rem;
+    font-size: 2rem;
     color: var(--color-charcoal);
     margin-bottom: var(--space-xs);
   }
 
   .profile-tagline {
-    font-size: 0.95rem;
-    color: var(--color-charcoal-light);
-    margin-bottom: var(--space-md);
+    font-family: var(--font-accent);
+    font-size: 1.15rem;
+    color: var(--color-orange);
   }
 
-  .social-row {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-sm);
-  }
-
-  .social-icon {
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-cream-dark);
-    border-radius: 50%;
-    color: var(--color-charcoal);
-    font-weight: 600;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-  }
-
-  .social-icon:hover {
-    background: var(--color-orange);
-    color: var(--color-cream);
-    transform: translateY(-2px);
-  }
-
-  /* Links List */
+  /* Links */
   .links-list {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: var(--space-sm);
+    gap: var(--space-md);
   }
 
   .link-card {
     display: flex;
     align-items: center;
-    gap: var(--space-md);
-    padding: var(--space-md);
+    padding: var(--space-md) var(--space-lg);
     background: var(--color-cream);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    border-left: 3px solid var(--card-color);
-    transition: all 0.2s ease;
+    border-radius: var(--radius-full);
+    box-shadow:
+      var(--shadow-sm),
+      inset 0 0 0 2px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s var(--ease-out-back);
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
   }
 
   .link-card:hover {
     box-shadow: var(--shadow-md);
-    transform: translateX(5px) scale(1.02);
+    transform: translateY(-2px);
+  }
+
+  /* Featured contact button */
+  .link-card.featured {
+    background: var(--color-orange);
+    box-shadow:
+      0 4px 20px rgba(232, 93, 36, 0.3),
+      0 0 0 3px rgba(232, 93, 36, 0.15);
+  }
+
+  .link-card.featured .link-title {
+    color: var(--color-cream);
+  }
+
+  .link-card.featured .link-arrow {
+    color: var(--color-cream);
+  }
+
+  .link-card.featured:hover {
+    box-shadow:
+      0 8px 30px rgba(232, 93, 36, 0.4),
+      0 0 0 3px rgba(232, 93, 36, 0.2);
   }
 
   .link-icon {
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--card-color);
-    border-radius: var(--radius-md);
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    margin-right: var(--space-md);
+    position: relative;
+    z-index: 1;
+    border-radius: 6px;
+  }
+
+  .link-icon-svg {
+    width: 24px;
+    height: 24px;
+    margin-right: var(--space-md);
+    position: relative;
+    z-index: 1;
     color: var(--color-cream);
     flex-shrink: 0;
   }
 
-  .link-content {
-    flex: 1;
-    min-width: 0;
-  }
 
   .link-title {
-    display: block;
+    flex: 1;
+    font-family: var(--font-body);
     font-weight: 600;
+    font-size: 1.05rem;
     color: var(--color-charcoal);
-    font-size: 0.95rem;
-  }
-
-  .link-description {
-    display: block;
-    font-size: 0.8rem;
-    color: var(--color-charcoal-light);
-    margin-top: 2px;
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
   }
 
   .link-arrow {
-    color: var(--color-charcoal-light);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-orange);
+    position: relative;
+    z-index: 1;
     opacity: 0;
-    transform: translateX(-5px);
-    transition: all 0.2s ease;
+    transform: translateX(-8px);
+    transition: all 0.3s var(--ease-out-back);
   }
 
   .link-card:hover .link-arrow {
@@ -299,36 +239,38 @@
     transform: translateX(0);
   }
 
-  /* Full Site Link */
+  /* Full site link */
   .full-site-link {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-sm);
     margin-top: var(--space-xl);
-    padding: var(--space-sm) var(--space-md);
-    color: var(--color-orange);
+    padding: var(--space-sm) var(--space-lg);
+    color: var(--color-charcoal-light);
     font-weight: 500;
     font-size: 0.9rem;
     text-decoration: none;
     border-radius: var(--radius-full);
-    transition: all 0.2s ease;
+    border: 1.5px solid var(--color-cream-dark);
+    transition: all 0.3s ease;
   }
 
   .full-site-link:hover {
     background: var(--color-orange);
+    border-color: var(--color-orange);
     color: var(--color-cream);
+    transform: translateY(-2px);
   }
 
   /* Footer */
   .links-footer {
-    margin-top: var(--space-xl);
+    margin-top: var(--space-lg);
     text-align: center;
   }
 
   .links-footer p {
     font-family: var(--font-accent);
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: var(--color-charcoal-light);
-    opacity: 0.6;
+    opacity: 0.5;
   }
 </style>
